@@ -1,0 +1,1 @@
+export default function Checkout() { return <div>Halaman Checkout (Dummy)</div>; }
