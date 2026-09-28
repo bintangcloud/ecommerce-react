@@ -1,1 +1,1 @@
-export default function Checkout() { return <div>Halaman Checkout (Dummy)</div>; }
+export default function Checkout() { return <div>Sistem belum rampung karena kekurangan dana</div>; }

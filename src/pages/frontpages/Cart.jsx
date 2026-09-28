@@ -1,1 +1,1 @@
-export default function Cart() { return <div>Halaman Keranjang (Dummy)</div>; }
+export default function Cart() { return <div>Ops, belum terisi</div>; }

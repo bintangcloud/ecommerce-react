@@ -1,29 +1,29 @@
 import { Link } from "react-router-dom";
-import ramenImg from "../assets/ramen.png";
+import koperasiImg from "../assets/koperasi.png";
 
 {/* Export Komponen dengan nama Navbar */}
 export default function Navbar() {
   return (
-    <nav className="bg-[#8B0000] text-[#E6C36A] px-6 py-4 flex justify-between items-center">
+    <nav className="bg-[#8B0000] text-[#FFFFFF] px-6 py-4 flex justify-between items-center">
       {/* Logo */}
-      <Link to="/" className="logo-font text-[#E6C36A] font-bold text-xl flex items-center gap-2">
+      <Link to="/" className="logo-font text-[#FFFFFF] font-bold text-xl flex items-center gap-2">
       <img 
-          src={ramenImg} 
+          src={koperasiImg} 
           alt="SabiRamen Logo"
           className="w-8 h-8 object-cover rounded-full"
         />
-        SabiRamen
+        My KopDes Shop
       </Link>
       
       {/* Menu Navigasi */}
       <div className="flex gap-6">
-        <Link to="/dashboard" className="hover:text-[#F5E6C8]">
-          Menu
+        <Link to="/dashboard" className="hover:text-[#ffffffc7]">
+          Dashboard
         </Link>
-        <Link to="/cart" className="hover:text-[#F5E6C8]">
+        <Link to="/cart" className="hover:text-[#ffffffc7]">
           Keranjang
         </Link>
-        <Link to="/checkout" className="hover:text-[#F5E6C8]">
+        <Link to="/checkout" className="hover:text-[#ffffffc7]">
           Checkout
         </Link>
       </div>
