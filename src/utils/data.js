@@ -2,6 +2,11 @@ import berasImg from "../assets/beras.png";
 import minyakImg from "../assets/minyak.png";
 import gulaImg from "../assets/gula.png";
 
+// Ubah versi ini (misal: v2, v3, dst) jika nanti kamu mengubah data/gambar di initialProducts lagi
+const STORAGE_VERSION = "v2";
+const PRODUCT_KEY = `kopdes_products_${STORAGE_VERSION}`;
+const CATEGORY_KEY = `kopdes_categories_${STORAGE_VERSION}`;
+
 export const initialProducts = [
   {
     id: 1,
@@ -16,7 +21,6 @@ export const initialProducts = [
       "Beras premium berkualitas dengan tekstur pulen dan cocok untuk konsumsi sehari-hari.",
     img: berasImg,
   },
-
   {
     id: 2,
     name: "Minyak Goreng 2L",
@@ -30,7 +34,6 @@ export const initialProducts = [
       "Minyak goreng berkualitas untuk kebutuhan memasak sehari-hari.",
     img: minyakImg,
   },
-
   {
     id: 3,
     name: "Gula Pasir Lokal 1kg",
@@ -52,12 +55,11 @@ export const initialProducts = [
 // ==============================
 
 export const getProducts = () => {
-  const saved = localStorage.getItem("kopdes_products");
+  const saved = localStorage.getItem(PRODUCT_KEY);
 
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-
       if (parsed.length > 0) return parsed;
     } catch (e) {
       console.error("Gagal parse local storage", e);
@@ -79,8 +81,6 @@ export const addProduct = (newProduct) => {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-");
 
-  // Jika gambar Base64 terlalu besar,
-  // gunakan gambar default agar tidak memenuhi localStorage
   let safeImg = newProduct.img;
 
   if (safeImg && safeImg.length > 500000) {
@@ -100,10 +100,7 @@ export const addProduct = (newProduct) => {
   const updated = [productWithId, ...current];
 
   try {
-    localStorage.setItem(
-      "kopdes_products",
-      JSON.stringify(updated)
-    );
+    localStorage.setItem(PRODUCT_KEY, JSON.stringify(updated));
   } catch (e) {
     alert("Memori penyimpanan browser penuh! Hapus beberapa data.");
   }
@@ -124,24 +121,18 @@ export const updateProduct = (id, updatedData) => {
       return {
         ...item,
         ...updatedData,
-
         slug: updatedData.name
           ? updatedData.name
               .toLowerCase()
               .replace(/[^a-z0-9]+/g, "-")
           : item.slug,
-
         img: updatedData.img || item.img,
       };
     }
-
     return item;
   });
 
-  localStorage.setItem(
-    "kopdes_products",
-    JSON.stringify(updated)
-  );
+  localStorage.setItem(PRODUCT_KEY, JSON.stringify(updated));
 
   return updated;
 };
@@ -153,15 +144,9 @@ export const updateProduct = (id, updatedData) => {
 
 export const deleteProduct = (id) => {
   const current = getProducts();
+  const updated = current.filter((item) => item.id !== id);
 
-  const updated = current.filter(
-    (item) => item.id !== id
-  );
-
-  localStorage.setItem(
-    "kopdes_products",
-    JSON.stringify(updated)
-  );
+  localStorage.setItem(PRODUCT_KEY, JSON.stringify(updated));
 
   return updated;
 };
@@ -178,29 +163,26 @@ const initialCategories = [
 ];
 
 export const getCategories = () => {
-  const saved = localStorage.getItem("kopdes_categories");
+  const saved = localStorage.getItem(CATEGORY_KEY);
 
   if (saved) {
-    const parsed = JSON.parse(saved);
-
-    if (parsed.length > 0) return parsed;
+    try {
+      const parsed = JSON.parse(saved);
+      if (parsed.length > 0) return parsed;
+    } catch (e) {
+      console.error("Gagal parse categories", e);
+    }
   }
 
   return initialCategories;
 };
-
 
 export const addCategory = (newCat) => {
   const current = getCategories();
 
   if (!current.includes(newCat)) {
     const updated = [...current, newCat];
-
-    localStorage.setItem(
-      "kopdes_categories",
-      JSON.stringify(updated)
-    );
-
+    localStorage.setItem(CATEGORY_KEY, JSON.stringify(updated));
     return updated;
   }
 
@@ -218,23 +200,17 @@ export const reduceStockAfterCheckout = (cartItems) => {
   cartItems.forEach((cartItem) => {
     products = products.map((prod) => {
       if (prod.id === cartItem.id) {
-        const newStock = Math.max(
-          0,
-          prod.stock - cartItem.qty
-        );
+        const qtyToSubtract = cartItem.quantity || cartItem.qty || 1;
+        const newStock = Math.max(0, prod.stock - qtyToSubtract);
 
         return {
           ...prod,
           stock: newStock,
         };
       }
-
       return prod;
     });
   });
 
-  localStorage.setItem(
-    "kopdes_products",
-    JSON.stringify(products)
-  );
+  localStorage.setItem(PRODUCT_KEY, JSON.stringify(products));
 };
