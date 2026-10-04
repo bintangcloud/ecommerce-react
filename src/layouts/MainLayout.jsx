@@ -1,44 +1,53 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
-import Navbar from "../components/navbar";
+import { useState, useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import { getCategories } from "../utils/data";
 
 export default function MainLayout() {
-  // 1. Buat state untuk Search dan Filter
   const [kataKunci, setKataKunci] = useState("");
   const [kategori, setKategori] = useState("Semua Kategori");
+  const [daftarKategori, setDaftarKategori] = useState(["Semua Kategori"]);
+  
+  const location = useLocation();
+  const isDashboard = location.pathname === "/";
+
+  useEffect(() => {
+    const categoriesFromAdmin = getCategories();
+    setDaftarKategori(["Semua Kategori", ...categoriesFromAdmin]);
+  }, []);
 
   return (
-    <div className="bg-[#FFFFFF] flex flex-col min-h-screen">
-      <Navbar />
+    <div className="bg-[#F8F9FA] flex flex-col min-h-screen font-sans">
       
-      {/* 2. Sambungkan input dan select dengan state */}
-      <header className="bg-gray-50 border-b p-4 flex flex-col md:flex-row gap-4 justify-between items-center">
-        <input
-          type="text"
-          placeholder="Cari produk..."
-          value={kataKunci}
-          onChange={(e) => setKataKunci(e.target.value)}
-          className="text-[#8B0000] w-full md:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:border-[#8B0000]"
-        />
-        
-        <select 
-          value={kategori}
-          onChange={(e) => setKategori(e.target.value)}
-          className="text-[#8B0000] px-4 py-2 border rounded-lg focus:outline-none focus:border-[#8B0000]"
-        >
-          <option>Semua Kategori</option>
-          <option>Sembako</option>
-          <option>Bahan Dapur</option>
-        </select>
-      </header>
+      {/* Oper data ke Navbar */}
+      <Navbar 
+        kataKunci={kataKunci}
+        setKataKunci={setKataKunci}
+        kategori={kategori}
+        setKategori={setKategori}
+        daftarKategori={daftarKategori}
+        isDashboard={isDashboard}
+      />
       
-      <main className="flex-1 p-6">
-        {/* 3. Kirim datanya ke halaman Anak (Dashboard) lewat context */}
+      <main className="flex-1 w-full max-w-6xl mx-auto p-4 md:p-6">
+        {/* Oper data ke Dashboard */}
         <Outlet context={{ kataKunci, kategori }} />
       </main>
       
-      <footer className="bg-[#8B0000] text-[#FFFFFF] text-center p-4">
-        <p>© 2026 My-Kopdes Simple App | Version 1.0</p>
+      {/* FOOTER */}
+      <footer className="bg-gray-900 text-gray-300 py-8 mt-auto border-t-4 border-[#8B0000]">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-center md:text-left">
+            <h3 className="text-2xl font-extrabold text-white tracking-tight mb-1 flex items-center justify-center md:justify-start gap-2">
+              <span className="bg-[#8B0000] text-white rounded-lg w-8 h-8 flex items-center justify-center text-lg">K</span>
+              <span>My<span className="text-[#8B0000]">KopDes</span></span>
+            </h3>
+            <p className="text-sm text-gray-500 mt-2">Pusat belanja kebutuhan pokok tepercaya di desa.</p>
+          </div>
+          <div className="text-center md:text-right text-xs text-gray-500">
+             © 2026 My-Kopdes App | Version 1.0
+          </div>
+        </div>
       </footer>
     </div>
   );
