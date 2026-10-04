@@ -1,6 +1,6 @@
 import berasImg from "../assets/beras.png";
-import minyakImg from "../assets/minyak.jpg";
-import gulaImg from "../assets/gula.jpg";
+import minyakImg from "../assets/minyak.png";
+import gulaImg from "../assets/gula.png";
 
 export const initialProducts = [
   {
