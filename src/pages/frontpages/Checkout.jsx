@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-// 1. Panggil Context Keranjang
 import { useCart } from "../../utils/CartContext";
+import { reduceStockAfterCheckout } from "../../utils/data";
 
 export default function Checkout() {
   const [isSuccess, setIsSuccess] = useState(false);
-  
-  // 2. Ambil data keranjang secara global
-  const { cart } = useCart();
+
+  const { cart, clearCart } = useCart();
 
   // 3. Hitung subtotal dan total bayar dinamis
   const subtotal = cart.reduce((total, item) => total + item.price * item.qty, 0);
@@ -17,7 +16,9 @@ export default function Checkout() {
 
   const handleCheckout = (e) => {
     e.preventDefault(); 
-    setIsSuccess(true); 
+    reduceStockAfterCheckout(cart);
+    setIsSuccess(true);
+    clearCart(); 
   };
 
   if (isSuccess) {

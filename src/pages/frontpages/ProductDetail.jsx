@@ -1,17 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 
 export default function ProductDetail() {
-  // 1. Menangkap state (data produk) yang dikirim dari ProductCard
   const location = useLocation();
   const p = location.state; 
 
-  // 2. State Lokal untuk mengelola input rating dan review (Langkah 4 Modul)
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
-  const [reviews, setReviews] = useState([]);
+  
+  // 1. Inisialisasi state reviews menggunakan Local Storage berdasarkan ID produk
+  const [reviews, setReviews] = useState(() => {
+    if (!p) return [];
+    const savedReviews = localStorage.getItem(`kopdes_reviews_${p.id}`);
+    return savedReviews ? JSON.parse(savedReviews) : [];
+  });
 
-  // Jika user refresh halaman atau ketik URL manual (state hilang)
+  // 2. Simpan ke Local Storage setiap kali daftar ulasan berubah
+  useEffect(() => {
+    if (p) {
+      localStorage.setItem(`kopdes_reviews_${p.id}`, JSON.stringify(reviews));
+    }
+  }, [reviews, p]);
+
   if (!p) {
     return (
       <div className="text-center py-20">
@@ -22,7 +32,6 @@ export default function ProductDetail() {
     );
   }
 
-  // Fungsi menyimpan review ke dalam state sementara
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!rating || !review.trim()) return;
@@ -34,8 +43,8 @@ export default function ProductDetail() {
     };
     
     setReviews([...reviews, newReview]);
-    setRating(0); // Reset form
-    setReview(""); // Reset form
+    setRating(0); 
+    setReview(""); 
   };
 
   return (

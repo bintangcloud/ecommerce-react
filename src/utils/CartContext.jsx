@@ -1,24 +1,23 @@
+// src/utils/CartContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  // 1. Inisialisasi state dengan membaca Local Storage (jika ada)
+  // Inisialisasi state dengan membaca Local Storage
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("kopdes_cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
 
-  // 2. Setiap kali 'cart' berubah, simpan otomatis ke Local Storage
+  // Simpan otomatis ke Local Storage setiap kali cart berubah
   useEffect(() => {
     localStorage.setItem("kopdes_cart", JSON.stringify(cart));
   }, [cart]);
 
-
   // Fungsi Tambah ke cart
   const addToCart = (product) => {
     setCart((prev) => {
-      // Cek apakah barang sudah ada di keranjang
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
         return prev.map((item) =>
@@ -43,15 +42,21 @@ export function CartProvider({ children }) {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
+  // FUNGSI BARU: Mengosongkan keranjang setelah checkout sukses
+  const clearCart = () => {
+    setCart([]);
+  };
+
   // Menghitung total barang untuk ditampilkan di Navbar
   const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, updateQty, removeFromCart, totalQty }}>
+    <CartContext.Provider 
+      value={{ cart, addToCart, updateQty, removeFromCart, clearCart, totalQty }}
+    >
       {children}
     </CartContext.Provider>
   );
 }
 
-// Custom hook agar gampang dipanggil di file lain
 export const useCart = () => useContext(CartContext);
