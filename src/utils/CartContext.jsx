@@ -1,10 +1,19 @@
-// src/utils/CartContext.jsx
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
+  // 1. Inisialisasi state dengan membaca Local Storage (jika ada)
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("kopdes_cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  // 2. Setiap kali 'cart' berubah, simpan otomatis ke Local Storage
+  useEffect(() => {
+    localStorage.setItem("kopdes_cart", JSON.stringify(cart));
+  }, [cart]);
+
 
   // Fungsi Tambah ke cart
   const addToCart = (product) => {
