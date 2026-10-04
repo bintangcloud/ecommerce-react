@@ -1,103 +1,125 @@
-import { useParams, Link } from "react-router-dom";
-
-// 1. Import foto-foto sembakonya
-import berasImg from "../../assets/beras.png";
-import minyakImg from "../../assets/minyak.jpg";
-import gulaImg from "../../assets/gula.jpg";
+import { useState } from "react";
+import { useLocation, Link } from "react-router-dom";
 
 export default function ProductDetail() {
-  // Mengambil ID produk dari URL (ingat: formatnya masih berupa teks/string)
-  const { id } = useParams();
+  // 1. Menangkap state (data produk) yang dikirim dari ProductCard
+  const location = useLocation();
+  const p = location.state; 
 
-  // 2. Siapkan data dummy yang sama dengan di Dashboard
-  // Aku tambahkan detail spesifikasi agar halamannya lebih penuh
-  const products = [
-    { 
-      id: 1, 
-      name: "Beras Premium 5kg", 
-      price: 75000,
-      desc: "Beras pulen berkualitas tinggi dari petani lokal pilihan. Sangat cocok untuk makan keluarga sehari-hari. Tanpa pemutih dan pengawet, sehingga lebih sehat dan aman dikonsumsi.",
-      stock: 45,
-      image: berasImg 
-    },
-    { 
-      id: 2, 
-      name: "Minyak Goreng 2L", 
-      price: 34000,
-      desc: "Minyak goreng kelapa sawit murni yang diproses dengan teknologi penyaringan tingkat tinggi. Menghasilkan minyak bening yang membuat gorengan lebih renyah dan tidak gatal di tenggorokan.",
-      stock: 20,
-      image: minyakImg 
-    },
-    { 
-      id: 3, 
-      name: "Gula Pasir Lokal 1kg", 
-      price: 16500,
-      desc: "Gula tebu asli dengan warna natural (sedikit kecoklatan) yang menandakan kemurniannya. Rasa manisnya alami, sangat pas untuk campuran teh, kopi, maupun bahan pembuatan kue.",
-      stock: 150,
-      image: gulaImg 
-    }
-  ];
+  // 2. State Lokal untuk mengelola input rating dan review (Langkah 4 Modul)
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState("");
+  const [reviews, setReviews] = useState([]);
 
-  // 3. Mencari produk berdasarkan ID dari URL
-  // Gunakan parseInt() karena ID dari useParams() adalah string ("1"), sedangkan di data dummy adalah angka (1)
-  const product = products.find((item) => item.id === parseInt(id));
-
-  // Jika user memasukkan ID ngawur di URL (misal: /product/99)
-  if (!product) {
+  // Jika user refresh halaman atau ketik URL manual (state hilang)
+  if (!p) {
     return (
       <div className="text-center py-20">
         <h1 className="text-2xl font-bold text-red-600">Produk Tidak Ditemukan</h1>
-        <p className="mt-4 text-gray-600">Maaf, barang yang Anda cari tidak ada di Kopdes kami.</p>
+        <p className="mt-4 text-gray-600">Kembali ke dashboard untuk memilih produk.</p>
         <Link to="/" className="text-blue-500 hover:underline mt-4 block">Kembali ke Beranda</Link>
       </div>
     );
   }
 
-  // 4. Jika produk ditemukan, tampilkan detailnya!
+  // Fungsi menyimpan review ke dalam state sementara
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!rating || !review.trim()) return;
+    
+    const newReview = {
+      id: Date.now(),
+      rating,
+      review,
+    };
+    
+    setReviews([...reviews, newReview]);
+    setRating(0); // Reset form
+    setReview(""); // Reset form
+  };
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md border max-w-4xl mx-auto">
-      {/* Tombol Kembali */}
-      <Link to="/" className="text-[#8B0000] hover:underline mb-6 inline-block font-semibold">
-        &larr; Kembali ke Dashboard
-      </Link>
-
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Bagian Kiri: Gambar Produk */}
-        <div className="w-full md:w-1/2">
-          <img 
-            src={product.image} 
-            alt={product.name} 
-            className="w-full h-80 object-cover rounded-lg shadow-sm border"
-          />
+    <div className="max-w-5xl mx-auto p-6 space-y-6 flex flex-col md:flex-row gap-6">
+      
+      {/* BAGIAN KIRI: Info Produk & Daftar Review */}
+      <section className="flex-1 space-y-6">
+        <Link to="/" className="text-[#8B0000] hover:underline mb-2 inline-block font-semibold">
+          &larr; Kembali
+        </Link>
+        
+        <div className="border rounded-lg p-6 shadow-sm bg-white">
+          <img src={p.img} alt={p.name} className="w-full h-64 object-cover rounded-md mb-4" />
+          <h1 className="text-3xl font-bold text-gray-800">{p.name}</h1>
+          <p className="text-2xl font-bold text-[#8B0000] mt-2">Rp {p.price.toLocaleString("id-ID")}</p>
+          <p className="text-gray-500 mt-2">Stok Tersedia: {p.stock}</p>
         </div>
 
-        {/* Bagian Kanan: Info Produk */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center">
-          <h1 className="text-3xl font-bold text-gray-800">{product.name}</h1>
-          <p className="text-3xl font-bold text-[#8B0000] mt-4">
-            Rp {product.price.toLocaleString("id-ID")}
-          </p>
-          
-          <div className="mt-6">
-            <h3 className="font-semibold text-gray-700 text-lg border-b pb-2">Deskripsi Produk</h3>
-            <p className="mt-4 text-gray-600 leading-relaxed">
-              {product.desc}
-            </p>
+        {/* Daftar Review Pengguna */}
+        <div className="bg-white p-6 border rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4">Ulasan Pembeli</h2>
+          {reviews.length === 0 ? (
+            <p className="text-gray-500 italic">Belum ada ulasan. Jadilah yang pertama!</p>
+          ) : (
+            <ul className="space-y-4">
+              {reviews.map((r) => (
+                <li key={r.id} className="border-b pb-4 last:border-0">
+                  <div className="flex gap-1 mb-2">
+                    {[...Array(r.rating)].map((_, i) => (
+                      <span key={i} className="text-yellow-500">★</span>
+                    ))}
+                    {[...Array(5 - r.rating)].map((_, i) => (
+                      <span key={i} className="text-gray-300">★</span>
+                    ))}
+                  </div>
+                  <p className="text-gray-700">{r.review}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </section>
+
+      {/* BAGIAN KANAN: Form Tambah Review */}
+      <section className="md:w-1/3 h-fit border rounded-lg p-6 shadow-sm bg-white">
+        <h2 className="text-xl font-semibold mb-4 border-b pb-2">Beri Ulasan</h2>
+        
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div>
+            <label className="block font-medium mb-1">Pilih Rating:</label>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  type="button"
+                  key={star}
+                  onClick={() => setRating(star)}
+                  className={`text-3xl ${star <= rating ? "text-yellow-500" : "text-gray-300"} hover:scale-110 transition`}
+                >
+                  ★
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="mt-6 flex items-center gap-4">
-            <p className="text-gray-500 font-medium">Stok Tersedia: <span className="text-black">{product.stock}</span></p>
+          <div>
+            <label className="block font-medium mb-1">Tulis Pengalamanmu:</label>
+            <textarea
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
+              className="w-full border rounded-lg p-3 focus:outline-none focus:ring-1 focus:ring-[#8B0000]"
+              rows="4"
+              placeholder="Sembakonya bagus dan murah..."
+            ></textarea>
           </div>
 
-          {/* Tombol Dummy untuk Beli */}
-          <button 
-            className="mt-8 bg-[#8B0000] text-white py-3 px-6 rounded-lg font-bold hover:bg-red-800 transition shadow-lg w-full md:w-auto"
-            onClick={() => alert(`Anda memasukkan ${product.name} ke keranjang!`)}
+          <button
+            type="submit"
+            className="w-full py-2 bg-[#8B0000] text-white font-bold rounded-lg hover:bg-red-800 transition"
           >
-            + Tambah ke Keranjang
+            Kirim Ulasan
           </button>
-        </div>
-      </div>
+        </form>
+      </section>
+      
     </div>
   );
 }
