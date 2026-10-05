@@ -2,13 +2,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../utils/CartContext";
 import BackButton from "../../components/BackButton";
 import Button from "../../components/Button";
+import { getProducts } from "../../utils/data";
 
 export default function Cart() {
   const navigate = useNavigate();
-  // 2. Ambil data keranjang dan fungsi-fungsinya secara global
   const { cart, updateQty, removeFromCart } = useCart();
-
-  // 3. Menghitung total harga dari data global
+  const latestProducts = getProducts();
   const totalPrice = cart.reduce((total, item) => total + item.price * item.qty, 0);
 
   return (
@@ -29,36 +28,71 @@ export default function Cart() {
         <div className="flex flex-col md:flex-row gap-6">
           
           <div className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow border space-y-4">
-            {cart.map((item) => (
-              <div key={item.id} className="flex flex-col sm:flex-row items-center gap-4 border-b pb-4 last:border-0 last:pb-0">
-                <img src={item.img} alt={item.name} className="w-20 h-20 object-cover rounded border" />
-                
-                <div className="flex-1 text-center sm:text-left">
-                  <h2 className="font-bold text-lg">{item.name}</h2>
-                  <p className="text-[#8B0000] font-semibold">Rp {item.price.toLocaleString("id-ID")}</p>
+            {cart.map((item) => {
+              // Cari stok produk paling update
+              const currentProd = latestProducts.find((p) => p.id === item.id);
+              const currentStock = currentProd ? currentProd.stock : item.stock;
+              const isOutOrStock = currentStock === 0;      
+
+              return (
+                <div key={item.id} className="flex flex-col sm:flex-row items-center gap-4 border-b pb-4 last:border-0 last:pb-0">
+                  <img src={item.img} alt={item.name} className="w-20 h-20 object-cover rounded border" />
+                  
+                  <div className="flex-1 text-center sm:text-left">
+                    <h2 className="font-bold text-lg">{item.name}</h2>
+                    <p className="text-[#8B0000] font-semibold">Rp {item.price.toLocaleString("id-ID")}</p>
+                    
+                    {/* INDIKATOR STOK HABIS DI KERANJANG */}
+                    {isOutOrStock ? (
+                      <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold mt-1 inline-block">
+                        Stok Habis! Harap hapus dari keranjang.
+                      </span>
+                    ) : (
+                      <span className="text-xs text-gray-500 mt-1 inline-block">
+                        Sisa Stok: {currentStock}
+                      </span>
+                    )}
                 </div>
 
                 {/* Fitur Update Qty dan Hapus Item */}
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2">
+                    <Button 
+                      variant="secondary"
+                      onClick={() => updateQty(item.id, item.qty - 1)}
+                      className="px-2.5 py-1 text-xs"
+                    >
+                      -
+                    </Button>
+
                     <input 
                       type="number" 
                       value={item.qty} 
                       min="1" 
-                      onChange={(e) => updateQty(item.id, parseInt(e.target.value))}
-                      className="w-16 border rounded p-1 text-center focus:outline-none focus:border-[#8B0000]"
+                      max={currentStock}
+                      onChange={(e) => updateQty(item.id, parseInt(e.target.value) || 1)}
+                      className="w-12 border rounded p-1 text-center text-sm focus:outline-none focus:border-[#8B0000]"
                     />
+
+                    <Button 
+                      variant="secondary"
+                      onClick={() => updateQty(item.id, item.qty + 1)}
+                      disabled={item.qty >= currentStock} // Matikan tombol + jika sudah mencapai batas stok
+                      className="px-2.5 py-1 text-xs"
+                    >
+                      +
+                    </Button>
                   </div>
                   <Button 
                     variant="danger" 
-                    onClick={() => handleDeleteClick(item.id)} 
-                    className="px-3 py-1 text-xs"
+                    onClick={() => removeFromCart(item.id)} 
+                    className="px-3 py-1"
                   >
                     Hapus
                   </Button>
                 </div>
               </div>
-            ))}
+            )})}
           </div>
 
           <div className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow border h-fit">

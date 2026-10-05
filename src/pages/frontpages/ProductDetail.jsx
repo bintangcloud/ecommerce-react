@@ -5,33 +5,19 @@ import BackButton from "../../components/BackButton";
 import Button from "../../components/Button";
 
 export default function ProductDetail() {
-
-  const location = useLocation();
-
-  const p = location.state; 
-
-  const navigate = useNavigate();
-
-  const { addToCart } = useCart();
-
-  const [rating, setRating] = useState(0);
-
-  const [review, setReview] = useState("");
-
-  const [showNotif, setShowNotif] = useState(false);
-
-  const [hasPurchased, setHasPurchased] = useState(false);
-
-  // State untuk melacak apakah user ini sudah pernah kasih ulasan
-  const [myReview, setMyReview] = useState(null);
-
-  const [isEditing, setIsEditing] = useState(false);
-
-  // data ulasan untuk hitung rata-rata rating
-  const [avgRating, setAvgRating] = useState(0);
-
-  const [totalSold, setTotalSold] = useState(0);
-
+const location = useLocation();
+const p = location.state; 
+const navigate = useNavigate();
+const { addToCart } = useCart();
+const [rating, setRating] = useState(0);
+const [review, setReview] = useState("");
+const [showNotif, setShowNotif] = useState(false);
+const [hasPurchased, setHasPurchased] = useState(false);
+const [myReview, setMyReview] = useState(null);
+const [isEditing, setIsEditing] = useState(false);
+const [avgRating, setAvgRating] = useState(0);
+const [totalSold, setTotalSold] = useState(0);
+const [qty, setQty] = useState(1);
   // Inisialisasi state reviews
   const [reviews, setReviews] = useState(() => {
 
@@ -101,31 +87,26 @@ export default function ProductDetail() {
   }, [reviews, p]);
 
 
-  // TAMBAHAN: Tambah ke keranjang
+  // Tambah ke keranjang
   const handleAddToCart = () => {
-
-    addToCart(p);
-
-    setShowNotif(true);
-
-    setTimeout(() => setShowNotif(false), 2500);
-
-  };
+  addToCart(p, qty); // Mengirim produk beserta jumlah pilihannya
+  setShowNotif(true);
+  setTimeout(() => setShowNotif(false), 1000);
+};
 
 
-  // TAMBAHAN: Beli sekarang
+  // Beli sekarang
   const handleBeliSekarang = () => {
+  const itemToBuy = { ...p, qty: qty };
+  navigate("/checkout", {
+    state: {
+      directBuyItem: itemToBuy
+    }
+  });
+};
 
-    navigate("/checkout", {
-      state: {
-        directBuyItem: p
-      }
-    });
 
-  };
-
-
-  // TAMBAHAN: Submit ulasan
+  // Submit ulasan
   const handleSubmit = (e) => {
 
     e.preventDefault();
@@ -361,6 +342,39 @@ export default function ProductDetail() {
 
                 </p>
 
+              </div>
+
+              {/* Kuantitas yg masuk keranjang*/}
+              <div className="flex items-center gap-4 my-4">
+                <span className="text-sm font-bold text-gray-700">Jumlah:</span>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    variant="secondary"
+                    onClick={() => setQty(Math.max(1, qty - 1))}
+                    className="px-3 py-1.5 text-xs"
+                  >
+                    -
+                  </Button>
+                  
+                  <input 
+                    type="number" 
+                    value={qty} 
+                    min="1" 
+                    max={p.stock}
+                    onChange={(e) => setQty(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-14 border border-gray-200 rounded-xl p-2 text-center text-sm font-bold focus:outline-none focus:border-[#8B0000]"
+                  />
+
+                  <Button 
+                    variant="secondary"
+                    onClick={() => setQty(Math.min(p.stock, qty + 1))}
+                    disabled={qty >= p.stock}
+                    className="px-3 py-1.5 text-xs"
+                  >
+                    +
+                  </Button>
+                </div>
+                <span className="text-xs text-gray-500">Stok: {p.stock}</span>
               </div>
 
 
