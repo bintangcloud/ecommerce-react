@@ -26,7 +26,7 @@ export default function Cart() {
         </div>
       ) : (
         <div className="flex flex-col md:flex-row gap-6">
-          
+
           <div className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow border space-y-4">
             {cart.map((item) => {
               // Cari stok produk paling update
@@ -36,16 +36,29 @@ export default function Cart() {
 
               return (
                 <div key={item.id} className="flex flex-col sm:flex-row items-center gap-4 border-b pb-4 last:border-0 last:pb-0">
-                  <img src={item.img} alt={item.name} className="w-20 h-20 object-cover rounded border" />
+  
+                  {/* GAMBAR PRODUK BISA DIKLIK */}
+                  <img 
+                    src={item.img} 
+                    alt={item.name} 
+                    onClick={() => navigate(`/product/${item.slug || item.id}`, { state: item })}
+                    className="w-20 h-20 object-cover rounded border cursor-pointer hover:opacity-80 transition" 
+                  />
                   
                   <div className="flex-1 text-center sm:text-left">
-                    <h2 className="font-bold text-lg">{item.name}</h2>
-                    <p className="text-[#8B0000] font-semibold">Rp {item.price.toLocaleString("id-ID")}</p>
+                    {/* NAMA PRODUK BISA DIKLIK */}
+                    <h2 
+                      onClick={() => navigate(`/product/${item.slug || item.id}`, { state: item })}
+                      className="font-bold text-lg cursor-pointer hover:text-[#8B0000] transition inline-block"
+                    >
+                      {item.name}
+                    </h2>
                     
+                    <p className="text-[#8B0000] font-semibold">Rp {item.price.toLocaleString("id-ID")}</p>
                     {/* INDIKATOR STOK HABIS DI KERANJANG */}
                     {isOutOrStock ? (
                       <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold mt-1 inline-block">
-                        Stok Habis! Harap hapus dari keranjang.
+                        Stok Habis! 
                       </span>
                     ) : (
                       <span className="text-xs text-gray-500 mt-1 inline-block">

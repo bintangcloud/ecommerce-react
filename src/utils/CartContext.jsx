@@ -15,17 +15,49 @@ export function CartProvider({ children }) {
   }, [cart]);
 
   // Fungsi Tambah ke cart
- const addToCart = (product, qtyToAdd = 1) => {
+const addToCart = (product, qtyToAdd = 1) => {
+    let isSuccess = false;
+
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
+      
       if (existing) {
+        // Jika di keranjang sudah mencapai atau melebihi stok total
+        if (existing.qty >= product.stock) {
+          isSuccess = false;
+          return prev;
+        }
+
+        // Hitung sisa ruang yang tersedia untuk ditambah
+        const availableSpace = product.stock - existing.qty;
+        
+        // Jika jumlah yang mau ditambah lebih besar dari sisa ruang, tolak
+        if (qtyToAdd > availableSpace) {
+          isSuccess = false;
+          return prev;
+        }
+
+        const safeQty = existing.qty + qtyToAdd;
+        isSuccess = true;
+
         return prev.map((item) =>
-          item.id === product.id ? { ...item, qty: item.qty + qtyToAdd } : item
+          item.id === product.id ? { ...item, qty: safeQty } : item
         );
+      } else {
+        // Jika produk belum ada sama sekali di keranjang
+        if (product.stock > 0 && qtyToAdd <= product.stock) {
+          isSuccess = true;
+          return [...prev, { ...product, qty: qtyToAdd }];
+        } else {
+          isSuccess = false;
+          return prev;
+        }
       }
-      return [...prev, { ...product, qty: qtyToAdd }];
     });
+
+    return isSuccess;
   };
+
 
   // Fungsi Update jumlah barang (qty)
 const updateQty = (id, qty) => {

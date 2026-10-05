@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../utils/CartContext";
 import Button from "./Button";
+import WarningAlert from "./WarningAlert";
 
 export default function ProductCard({ p }) {
   const { addToCart } = useCart();
   const [showNotif, setShowNotif] = useState(false);
+  const [warningMsg, setWarningMsg] = useState("");
+  const [showWarning, setShowWarning] = useState(false);
   const navigate = useNavigate();
   // State untuk rating dan jumlah terjual
   const [avgRating, setAvgRating] = useState(0);
@@ -27,10 +30,17 @@ export default function ProductCard({ p }) {
   }, [p.id]);
 
   const handleAddToCart = () => {
-    addToCart(p);
-    setShowNotif(true);
-    // Hilang otomatis setelah 2 detik
-    setTimeout(() => setShowNotif(false), 2000);
+    // Panggil addToCart dan tangkap statusnya
+    const success = addToCart(p, 1);
+    
+    if (success) {
+      setShowNotif(true);
+      setTimeout(() => setShowNotif(false), 1000);
+    } else {
+      setWarningMsg("Stok produk ini sudah maksimal di keranjang belanjaanmu!");
+      setShowWarning(true);
+      setTimeout(() => setShowWarning(false), 1000);
+    }
   };
 
   return (
@@ -58,6 +68,8 @@ export default function ProductCard({ p }) {
           </div>
         </div>
       )}
+
+      <WarningAlert message={warningMsg} show={showWarning} />
 
       {/* 2. KONTEN KARTU UTAMA */}
       <div>

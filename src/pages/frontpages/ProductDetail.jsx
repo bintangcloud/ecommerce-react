@@ -3,12 +3,13 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../utils/CartContext";
 import BackButton from "../../components/BackButton";
 import Button from "../../components/Button";
+import WarningAlert from "../../components/WarningAlert";
 
 export default function ProductDetail() {
 const location = useLocation();
 const p = location.state; 
 const navigate = useNavigate();
-const { addToCart } = useCart();
+const { cart, addToCart } = useCart();
 const [rating, setRating] = useState(0);
 const [review, setReview] = useState("");
 const [showNotif, setShowNotif] = useState(false);
@@ -18,6 +19,13 @@ const [isEditing, setIsEditing] = useState(false);
 const [avgRating, setAvgRating] = useState(0);
 const [totalSold, setTotalSold] = useState(0);
 const [qty, setQty] = useState(1);
+const cartItem = cart.find((item) => item.id === p.id);
+const qtyInCart = cartItem ? cartItem.qty : 0;
+
+const [warningMsg, setWarningMsg] = useState("");
+const [showWarning, setShowWarning] = useState(false);
+
+  const remainingStock = Math.max(0, p.stock - qtyInCart);
   // Inisialisasi state reviews
   const [reviews, setReviews] = useState(() => {
 
@@ -89,9 +97,16 @@ const [qty, setQty] = useState(1);
 
   // Tambah ke keranjang
   const handleAddToCart = () => {
-  addToCart(p, qty); // Mengirim produk beserta jumlah pilihannya
-  setShowNotif(true);
-  setTimeout(() => setShowNotif(false), 1000);
+  const success = addToCart(p, qty);
+
+  if (success) {
+    setShowNotif(true);
+    setTimeout(() => setShowNotif(false), 2000);
+  } else {
+    setWarningMsg("Jumlah yang ingin kamu masukkan melebihi sisa stok yang tersedia di keranjang!");
+    setShowWarning(true);
+    setTimeout(() => setShowWarning(false), 3000);
+  }
 };
 
 
@@ -248,6 +263,8 @@ const [qty, setQty] = useState(1);
 
       )}
 
+      <WarningAlert message={warningMsg} show={showWarning} />
+
 
       <div className="max-w-5xl mx-auto p-4 md:p-6 space-y-8">
 
@@ -345,37 +362,39 @@ const [qty, setQty] = useState(1);
               </div>
 
               {/* Kuantitas yg masuk keranjang*/}
-              <div className="flex items-center gap-4 my-4">
-                <span className="text-sm font-bold text-gray-700">Jumlah:</span>
-                <div className="flex items-center gap-2">
-                  <Button 
-                    variant="secondary"
-                    onClick={() => setQty(Math.max(1, qty - 1))}
-                    className="px-3 py-1.5 text-xs"
-                  >
-                    -
-                  </Button>
-                  
-                  <input 
-                    type="number" 
-                    value={qty} 
-                    min="1" 
-                    max={p.stock}
-                    onChange={(e) => setQty(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-14 border border-gray-200 rounded-xl p-2 text-center text-sm font-bold focus:outline-none focus:border-[#8B0000]"
-                  />
+            <div className="flex items-center gap-4 my-4">
+              <span className="text-sm font-bold text-gray-700">Jumlah:</span>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="secondary"
+                  onClick={() => setQty(Math.max(1, qty - 1))}
+                  className="px-3 py-1.5 text-xs"
+                >
+                  -
+                </Button>
+                
+                <input 
+                  type="number" 
+                  value={qty} 
+                  min="1" 
+                  max={remainingStock} // Batasi sesuai sisa stok yang belum masuk keranjang
+                  onChange={(e) => setQty(Math.max(1, Math.min(remainingStock, parseInt(e.target.value) || 1)))}
+                  className="w-14 border border-gray-200 rounded-xl p-2 text-center text-sm font-bold focus:outline-none focus:border-[#8B0000]"
+                />
 
-                  <Button 
-                    variant="secondary"
-                    onClick={() => setQty(Math.min(p.stock, qty + 1))}
-                    disabled={qty >= p.stock}
-                    className="px-3 py-1.5 text-xs"
-                  >
-                    +
-                  </Button>
-                </div>
-                <span className="text-xs text-gray-500">Stok: {p.stock}</span>
+                <Button 
+                  variant="secondary"
+                  onClick={() => setQty(Math.min(remainingStock, qty + 1))}
+                  disabled={qty >= remainingStock || remainingStock === 0}
+                  className="px-3 py-1.5 text-xs"
+                >
+                  +
+                </Button>
               </div>
+              <span className="text-xs text-gray-500">
+                {remainingStock === 0 ? "Sudah maksimal di keranjang" : `Sisa bisa ditambah ke keranjang: ${remainingStock}`}
+              </span>
+            </div>
 
 
               <div className="flex gap-3 mt-6">
