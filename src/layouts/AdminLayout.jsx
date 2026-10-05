@@ -30,7 +30,7 @@ export default function AdminLayout() {
         
         {/* Footer Admin */}
         <footer className="bg-white border-t p-4 text-center text-sm text-gray-500">
-          © 2026 Admin Kopdes Sembako | v1.0.0
+          © 2026 Admin Kopdes | v1.0.0
         </footer>
       </div>
     </div>

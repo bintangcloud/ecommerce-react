@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Button from "../../components/Button";
 import {
   addProduct,
   getProducts,
@@ -157,12 +158,9 @@ export default function AdminDashboard() {
             className="flex-1 border p-2.5 rounded-lg text-sm focus:outline-none focus:border-[#8B0000]"
           />
 
-          <button
-            type="submit"
-            className="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-900 transition"
-          >
-            + Tambah Kategori
-          </button>
+        <Button type="submit" variant="dark">
+          + Tambah Kategori
+        </Button>
         </form>
       </div>
 
@@ -177,12 +175,9 @@ export default function AdminDashboard() {
           </h2>
 
           {editId && (
-            <button
-              onClick={resetForm}
-              className="text-xs bg-gray-200 text-gray-700 px-3 py-1 rounded hover:bg-gray-300 font-semibold"
-            >
-              Batal Edit
-            </button>
+          <Button variant="secondary" onClick={resetForm} className="py-1 px-3 text-xs">
+            Batal Edit
+          </Button>
           )}
         </div>
 
@@ -306,15 +301,9 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          {/* Tombol Simpan */}
-          <button
-            type="submit"
-            className="w-full bg-[#8B0000] text-white py-3 rounded-lg font-bold hover:bg-red-800 transition shadow-sm mt-2"
-          >
-            {editId
-              ? "Simpan Perubahan Produk"
-              : "Simpan Produk Baru"}
-          </button>
+          <Button type="submit" className="w-full mt-2">
+            {editId ? "Simpan Perubahan Produk" : "Simpan Produk Baru"}
+          </Button>
 
         </form>
       </div>
@@ -382,19 +371,14 @@ export default function AdminDashboard() {
 
                   <td className="p-3 text-center space-x-2">
 
-                    <button
-                      onClick={() => handleEditClick(item)}
-                      className="bg-yellow-500 text-white px-3 py-1 rounded text-xs font-bold hover:bg-yellow-600"
-                    >
+                                      <td className="p-3 flex justify-center items-center gap-2">
+                    <Button variant="warning" onClick={() => handleEditClick(item)} className="py-1.5 px-3 text-xs">
                       Edit
-                    </button>
-
-                    <button
-                      onClick={() => handleDeleteClick(item.id)}
-                      className="bg-red-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-red-700"
-                    >
+                    </Button>
+                    <Button variant="dangerSolid" onClick={() => handleDeleteClick(item.id)} className="py-1.5 px-3 text-xs">
                       Hapus
-                    </button>
+                    </Button>
+                  </td>
 
                   </td>
 

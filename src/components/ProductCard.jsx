@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "../utils/CartContext";
+import Button from "./Button";
 
 export default function ProductCard({ p }) {
   const { addToCart } = useCart();
   const [showNotif, setShowNotif] = useState(false);
-  
+  const navigate = useNavigate();
   // State untuk rating dan jumlah terjual
   const [avgRating, setAvgRating] = useState(0);
   const [totalReviews, setTotalReviews] = useState(0);
@@ -92,20 +93,20 @@ export default function ProductCard({ p }) {
         </p>
 
         <div className="grid grid-cols-2 gap-2">
-          <Link
-            to={`/product/${p.slug}`}
-            state={p} 
-            className="border border-gray-200 text-gray-700 text-center text-sm font-bold py-2.5 rounded-xl hover:border-[#8B0000] hover:text-[#8B0000] transition"
+          <Button 
+            variant="outline" 
+            onClick={() => navigate(`/product/${p.slug}`, { state: p })}
           >
             Detail
-          </Link>
+          </Button>
           
-          <button
+          <Button 
+            variant="primary" 
             onClick={handleAddToCart}
-            className="bg-[#8B0000] text-white hover:bg-red-800 text-sm font-bold py-2.5 rounded-xl transition-transform active:scale-95 flex items-center justify-center shadow-sm"
+            disabled={p.stock === 0}
           >
-            + Keranjang
-          </button>
+            {p.stock === 0 ? "Habis" : "+ Keranjang"}
+          </Button>
         </div>
       </div>
     </div>

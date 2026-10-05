@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-
 import { useLocation, Link, useNavigate } from "react-router-dom";
-
 import { useCart } from "../../utils/CartContext";
+import BackButton from "../../components/BackButton";
+import Button from "../../components/Button";
 
 export default function ProductDetail() {
 
@@ -220,14 +220,7 @@ export default function ProductDetail() {
           Produk Tidak Ditemukan
         </h1>
 
-        <Link 
-          to="/" 
-          className="inline-flex items-center gap-2 text-gray-500 hover:text-[#8B0000] font-semibold transition-colors"
-        >
-
-          <span>❮</span> Kembali
-
-        </Link>
+        <BackButton to="/" />
 
       </div>
 
@@ -245,11 +238,8 @@ export default function ProductDetail() {
       {showNotif && (
 
         <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none bg-black/20 backdrop-blur-sm transition-all">
-
           <div className="bg-[#424242]/95 text-white w-80 md:w-96 p-10 flex flex-col items-center justify-center gap-6 shadow-2xl rounded-xl animate-fade-in-up">
-
             <div className="bg-[#00c49a] rounded-full w-20 h-20 flex items-center justify-center shadow-lg">
-
               <svg 
                 className="w-10 h-10 text-white" 
                 fill="none" 
@@ -265,7 +255,6 @@ export default function ProductDetail() {
                 />
 
               </svg>
-
             </div>
 
             <p className="text-lg font-medium text-center">
@@ -283,14 +272,7 @@ export default function ProductDetail() {
 
         {/* Navigasi Kembali */}
 
-        <Link 
-          to="/" 
-          className="inline-flex items-center gap-2 text-gray-500 hover:text-[#8B0000] font-semibold transition-colors"
-        >
-
-          <span>❮</span> Kembali
-
-        </Link>
+        <BackButton to="/" />
 
 
         {/* DETAIL PRODUK UTAMA */}
@@ -383,25 +365,23 @@ export default function ProductDetail() {
 
 
               <div className="flex gap-3 mt-6">
-
-                <button 
+                <Button 
+                  variant="outline"
                   onClick={handleAddToCart} 
-                  className="flex-1 border-2 border-[#8B0000] text-[#8B0000] hover:bg-red-50 py-3 rounded-xl font-bold transition-all active:scale-95"
+                  disabled={p.stock === 0}
+                  className="flex-1"
                 >
-
                   + Keranjang
+                </Button>
 
-                </button>
-
-                <button 
+                <Button 
+                  variant="primary"
                   onClick={handleBeliSekarang} 
-                  className="flex-1 bg-[#8B0000] text-white hover:bg-red-800 py-3 rounded-xl font-bold shadow-md transition-all active:scale-95"
+                  disabled={p.stock === 0}
+                  className="flex-1"
                 >
-
-                  Beli Sekarang
-
-                </button>
-
+                  {p.stock === 0 ? "Stok Habis" : "Beli Sekarang"}
+                </Button>
               </div>
 
             </div>
@@ -555,25 +535,12 @@ export default function ProductDetail() {
                 </div>
 
                 <div className="flex gap-2">
-
-                  <button 
-                    onClick={handleEdit} 
-                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl font-bold text-xs transition"
-                  >
-
+                  <Button variant="secondary" onClick={handleEdit} className="flex-1 text-xs">
                     Edit Ulasan
-
-                  </button>
-
-                  <button 
-                    onClick={handleDelete} 
-                    className="flex-1 bg-red-50 hover:bg-red-100 text-red-600 py-2.5 rounded-xl font-bold text-xs transition"
-                  >
-
+                  </Button>
+                  <Button variant="danger" onClick={handleDelete} className="flex-1 text-xs">
                     Hapus
-
-                  </button>
-
+                  </Button>
                 </div>
 
               </div>
@@ -636,33 +603,16 @@ export default function ProductDetail() {
 
                 </div>
 
-
                 <div className="flex gap-2">
-
-                  {isEditing && (
-
-                    <button 
-                      type="button" 
-                      onClick={() => setIsEditing(false)} 
-                      className="w-1/3 bg-gray-100 text-gray-600 py-2.5 rounded-xl font-bold text-xs"
-                    >
-
-                      Batal
-
-                    </button>
-
-                  )}
-
-                  <button 
-                    type="submit" 
-                    className="flex-1 bg-[#8B0000] text-white py-2.5 rounded-xl font-bold text-xs hover:bg-red-800 transition"
-                  >
-
-                    {isEditing ? "Simpan Perubahan" : "Kirim Ulasan"}
-
-                  </button>
-
-                </div>
+                {isEditing && (
+                  <Button variant="secondary" onClick={() => setIsEditing(false)} className="w-1/3 text-xs">
+                    Batal
+                  </Button>
+                )}
+                <Button type="submit" className="text-xs">
+                  {isEditing ? "Simpan Perubahan" : "Kirim Ulasan"}
+                </Button>
+              </div>
 
               </form>
 

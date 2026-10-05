@@ -1,9 +1,10 @@
-// src/pages/frontpages/Cart.jsx
-import { Link } from "react-router-dom";
-// 1. Panggil Context, bukan useState lagi
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../utils/CartContext";
+import BackButton from "../../components/BackButton";
+import Button from "../../components/Button";
 
 export default function Cart() {
+  const navigate = useNavigate();
   // 2. Ambil data keranjang dan fungsi-fungsinya secara global
   const { cart, updateQty, removeFromCart } = useCart();
 
@@ -13,22 +14,16 @@ export default function Cart() {
   return (
     
     <div className="max-w-5xl mx-auto p-6">
-      {/* TOMBOL KEMBALI */}
-      <Link 
-        to="/" 
-        className="inline-flex items-center gap-2 text-gray-500 hover:text-[#8B0000] font-semibold transition-colors"
-      >
-        <span>❮</span> Kembali
-      </Link>
+    <BackButton to="/" />
 
       <h1 className="text-3xl font-bold text-[#8B0000] mb-6">Keranjang Belanja</h1>
 
       {cart.length === 0 ? (
         <div className="bg-white p-8 rounded-lg shadow text-center border">
           <p className="text-gray-500 mb-4 text-lg">Keranjang belanja Anda masih kosong.</p>
-          <Link to="/" className="bg-[#8B0000] text-white py-2 px-6 rounded hover:bg-red-800 transition">
-            Mulai Belanja Sembako
-          </Link>
+        <Button onClick={() => navigate("/")} className="mx-auto mt-4">
+            Mulai Belanja
+        </Button>
         </div>
       ) : (
         <div className="flex flex-col md:flex-row gap-6">
@@ -54,12 +49,13 @@ export default function Cart() {
                       className="w-16 border rounded p-1 text-center focus:outline-none focus:border-[#8B0000]"
                     />
                   </div>
-                  <button 
-                    onClick={() => removeFromCart(item.id)}
-                    className="bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded font-bold text-sm"
+                  <Button 
+                    variant="danger" 
+                    onClick={() => handleDeleteClick(item.id)} 
+                    className="px-3 py-1 text-xs"
                   >
                     Hapus
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
@@ -72,12 +68,9 @@ export default function Cart() {
               <span className="font-bold text-lg text-[#8B0000]">Rp {totalPrice.toLocaleString("id-ID")}</span>
             </div>
 
-            <Link 
-              to="/checkout"
-              className="block text-center bg-[#8B0000] text-white py-3 rounded-lg font-bold hover:bg-red-800 transition w-full"
-            >
-              Lanjut ke Checkout
-            </Link>
+          <Button onClick={() => navigate("/checkout")} className="w-full">
+              Checkout
+          </Button>
           </div>
 
         </div>

@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../../utils/CartContext";
 import { reduceStockAfterCheckout } from "../../utils/data";
+import BackButton from "../../components/BackButton";
+import Button from "../../components/Button";
 
 export default function Checkout() {
   const [isSuccess, setIsSuccess] = useState(false);
 
   const { cart, clearCart } = useCart();
   const location = useLocation();
+  const navigate = useNavigate();
 
   // ==========================================
   // CEK SUMBER CHECKOUT
@@ -126,12 +129,9 @@ export default function Checkout() {
           Pesanan Anda akan segera kami antar.
         </p>
 
-        <Link
-          to="/"
-          className="bg-[#8B0000] text-white py-3 px-8 rounded-lg font-bold hover:bg-red-800 transition"
-        >
-          Kembali ke Dashboard
-        </Link>
+      <Button onClick={() => navigate("/")} className="px-8 mx-auto">
+        Kembali ke Dashboard
+      </Button>
       </div>
     );
   }
@@ -143,14 +143,7 @@ export default function Checkout() {
   return (
     <div className="max-w-5xl mx-auto p-6">
 
-      {/* Tombol kembali */}
-      <Link
-        to="/"
-        className="inline-flex items-center gap-2 text-gray-500 hover:text-[#8B0000] font-semibold transition-colors"
-      >
-        <span>❮</span>
-        Kembali
-      </Link>
+    <BackButton to="/" />
 
       <h1 className="text-3xl font-bold text-[#8B0000] mb-6">
         Checkout Pesanan
@@ -262,17 +255,13 @@ export default function Checkout() {
                 TOMBOL CHECKOUT
             ================================== */}
 
-            <button
-              type="submit"
-              disabled={itemsToCheckout.length === 0}
-              className={`mt-4 py-3 rounded-lg font-bold shadow transition ${
-                itemsToCheckout.length === 0
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-[#8B0000] text-white hover:bg-red-800"
-              }`}
+            <Button 
+              type="submit" 
+              disabled={itemsToCheckout.length === 0} 
+              className="mt-4 w-full"
             >
               Buat Pesanan Sekarang
-            </button>
+            </Button>
 
           </form>
         </div>
