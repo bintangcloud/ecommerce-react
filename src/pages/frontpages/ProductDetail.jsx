@@ -226,7 +226,9 @@ const [showWarning, setShowWarning] = useState(false);
       <div className="max-w-5xl mx-auto p-4 md:p-6 space-y-8">
         <BackButton to="/" />
 
-        //Detail Produk
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight ml-1">
+          Detail <span className="text-[#8B0000]">Produk</span>
+        </h1>
         <div className="border border-gray-100 rounded-3xl p-6 md:p-8 shadow-sm bg-white">
           <div className="flex flex-col md:flex-row gap-8">
             <img 
