@@ -6,7 +6,7 @@ import pengepelImg from "../assets/pengepel.jpg";
 import telurImg from "../assets/telur.jpg";
 
 const STORAGE_VERSION = "v2";
-const PRODUCT_KEY = `kopdes_products_final_${STORAGE_VERSION}`;
+const PRODUCT_KEY = `kopdes_products_final2_${STORAGE_VERSION}`;
 const CATEGORY_KEY = `kopdes_categories_${STORAGE_VERSION}`;
 
 export const initialProducts = [
