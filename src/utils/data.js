@@ -1,6 +1,6 @@
-import berasImg from "../assets/beras.png";
-import minyakImg from "../assets/minyak.png";
-import gulaImg from "../assets/gula.png";
+import berasImg from "../assets/beras.jpg";
+import minyakImg from "../assets/minyak.jpg";
+import gulaImg from "../assets/gula.jpg";
 
 const STORAGE_VERSION = "v2";
 const PRODUCT_KEY = `kopdes_products_${STORAGE_VERSION}`;
