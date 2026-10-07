@@ -3,7 +3,7 @@ import minyakImg from "../assets/minyak.jpg";
 import gulaImg from "../assets/gula.jpg";
 
 const STORAGE_VERSION = "v2";
-const PRODUCT_KEY = `kopdes_products_${STORAGE_VERSION}`;
+const PRODUCT_KEY = `kopdes_products_final_${STORAGE_VERSION}`;
 const CATEGORY_KEY = `kopdes_categories_${STORAGE_VERSION}`;
 
 export const initialProducts = [
