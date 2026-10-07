@@ -7,11 +7,11 @@ export default function MainLayout() {
   const [kataKunci, setKataKunci] = useState("");
   const [kategori, setKategori] = useState("Semua Kategori");
   const [daftarKategori, setDaftarKategori] = useState(["Semua Kategori"]);
-  
   const location = useLocation();
   const isDashboard = location.pathname === "/";
 
   useEffect(() => {
+    // Ambil daftar kategori dari data produk untuk filter di Navbar
     const categoriesFromAdmin = getCategories();
     setDaftarKategori(["Semua Kategori", ...categoriesFromAdmin]);
   }, []);
@@ -45,7 +45,7 @@ export default function MainLayout() {
             <p className="text-sm text-gray-500 mt-2">Pusat belanja kebutuhan pokok tepercaya di desa.</p>
           </div>
           <div className="text-center md:text-right text-xs text-gray-500">
-             © 2026 My-Kopdes App | Version 1.0
+            © 2026 My-Kopdes App | Version 1.0
           </div>
         </div>
       </footer>

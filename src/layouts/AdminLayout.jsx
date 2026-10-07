@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 import { useState } from "react";
 
 export default function AdminLayout() {
-  // State untuk membuka/tutup sidebar di layar HP (Mobile)
+  // State untuk membuka/tutup sidebar di layar HP 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (

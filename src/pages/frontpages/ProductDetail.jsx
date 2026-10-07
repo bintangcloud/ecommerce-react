@@ -21,27 +21,20 @@ const [totalSold, setTotalSold] = useState(0);
 const [qty, setQty] = useState(1);
 const cartItem = cart.find((item) => item.id === p.id);
 const qtyInCart = cartItem ? cartItem.qty : 0;
-
+const remainingStock = Math.max(0, p.stock - qtyInCart);
 const [warningMsg, setWarningMsg] = useState("");
 const [showWarning, setShowWarning] = useState(false);
 
-  const remainingStock = Math.max(0, p.stock - qtyInCart);
-  // Inisialisasi state reviews
+// Ambil ulasan dari localStorage saat komponen dimuat
   const [reviews, setReviews] = useState(() => {
-
     if (!p) return [];
-
     const savedReviews = localStorage.getItem(`kopdes_reviews_${p.id}`);
-
     return savedReviews ? JSON.parse(savedReviews) : [];
-
   });
 
   // Cek riwayat belanja & ulasan saya
   useEffect(() => {
-
     if (p) {
-
       localStorage.setItem(
         `kopdes_reviews_${p.id}`,
         JSON.stringify(reviews)
@@ -50,7 +43,6 @@ const [showWarning, setShowWarning] = useState(false);
       // Cek apakah sudah pernah membeli
       const riwayatBelanja =
         JSON.parse(localStorage.getItem("kopdes_riwayat_belanja")) || [];
-
       if (riwayatBelanja.includes(p.id)) {
 
         setHasPurchased(true);
@@ -79,19 +71,14 @@ const [showWarning, setShowWarning] = useState(false);
         setAvgRating((sum / reviews.length).toFixed(1));
 
       } else {
-
         setAvgRating(0);
-
       }
 
       // Ambil jumlah produk terjual
       const soldData =
         JSON.parse(localStorage.getItem("kopdes_product_sold")) || {};
-
       setTotalSold(soldData[p.id] || 0);
-
     }
-
   }, [reviews, p]);
 
 
@@ -123,15 +110,10 @@ const [showWarning, setShowWarning] = useState(false);
 
   // Submit ulasan
   const handleSubmit = (e) => {
-
     e.preventDefault();
-
     if (!rating) {
-
       alert("Mohon berikan bintang (rating) terlebih dahulu!");
-
       return;
-
     }
 
     if (isEditing && myReview) {
@@ -164,54 +146,40 @@ const [showWarning, setShowWarning] = useState(false);
       };
 
       setReviews([...reviews, newReview]);
-
       setMyReview(newReview);
-
     }
 
     setRating(0);
-
     setReview("");
 
   };
 
-
+  // Edit ulasan
   const handleEdit = () => {
-
     setRating(myReview.rating);
-
     setReview(myReview.review);
-
     setIsEditing(true);
 
   };
 
-
+// Hapus ulasan
   const handleDelete = () => {
-
     if (confirm("Hapus ulasanmu?")) {
-
       const filtered = reviews.filter(
         (r) => r.id !== myReview.id
       );
 
       setReviews(filtered);
-
       setMyReview(null);
-
       setIsEditing(false);
 
     }
-
   };
 
-
+  // Jika produk tidak ditemukan, tampilkan pesan
   if (!p) {
-
     return (
-
       <div className="text-center py-20">
-
         <h1 className="text-2xl font-bold text-red-600">
           Produk Tidak Ditemukan
         </h1>
@@ -219,16 +187,12 @@ const [showWarning, setShowWarning] = useState(false);
         <BackButton to="/" />
 
       </div>
-
     );
-
   }
 
 
   return (
-
     <>
-
       {/* NOTIFIKASI BESAR DI TENGAH LAYAR */}
 
       {showNotif && (
@@ -243,54 +207,38 @@ const [showWarning, setShowWarning] = useState(false);
                 viewBox="0 0 24 24" 
                 strokeWidth="4"
               >
-
                 <path 
                   strokeLinecap="round" 
                   strokeLinejoin="round" 
                   d="M5 13l4 4L19 7"
                 />
-
               </svg>
             </div>
-
             <p className="text-lg font-medium text-center">
               Produk telah ditambahkan ke keranjang
             </p>
-
           </div>
-
         </div>
-
       )}
-
       <WarningAlert message={warningMsg} show={showWarning} />
 
 
       <div className="max-w-5xl mx-auto p-4 md:p-6 space-y-8">
-
-        {/* Navigasi Kembali */}
-
         <BackButton to="/" />
 
-
-        {/* DETAIL PRODUK UTAMA */}
-
+        //Detail Produk
         <div className="border border-gray-100 rounded-3xl p-6 md:p-8 shadow-sm bg-white">
-
           <div className="flex flex-col md:flex-row gap-8">
-
             <img 
               src={p.img} 
               alt={p.name} 
               className="w-full md:w-1/2 h-72 object-cover rounded-2xl border border-gray-100" 
             />
-
+            
             <div className="flex-1 flex flex-col justify-center">
 
               <span className="text-xs font-bold bg-red-50 text-[#8B0000] px-3 py-1.5 rounded-full w-max mb-3">
-
                 {p.category_name}
-
               </span>
 
               <h1 className="text-3xl font-extrabold text-gray-800">
@@ -307,63 +255,42 @@ const [showWarning, setShowWarning] = useState(false);
 
 
               {/* RATING & TERJUAL DI DETAIL PRODUK */}
-
               <div className="flex items-center gap-4 my-3 text-sm">
-
                 <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-lg border border-yellow-100">
-
                   <span className="text-yellow-500 font-bold text-base">
                     ★
                   </span>
-
                   <span className="font-bold text-gray-800">
-
                     {avgRating > 0 ? avgRating : "0.0"}
-
                   </span>
-
                   <span className="text-gray-500">
-
                     ({reviews.length} ulasan)
-
                   </span>
-
                 </div>
 
                 <div className="text-gray-600 font-medium bg-gray-100 px-3 py-1 rounded-lg">
 
                   Terjual{" "}
-
                   <span className="font-bold text-gray-800">
-
                     {totalSold}
-
                   </span>{" "}
-
                   pcs
-
                 </div>
-
               </div>
 
 
               <div className="mt-4 pt-4 border-t border-gray-100">
-
                 <h3 className="font-bold text-gray-800 mb-1 text-sm">
                   Deskripsi Produk:
                 </h3>
-
                 <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">
-
                   {p.description || "Admin belum menambahkan detail spesifik untuk produk ini."}
-
                 </p>
-
               </div>
 
-              {/* Kuantitas yg masuk keranjang*/}
-            <div className="flex items-center gap-4 my-4">
-              <span className="text-sm font-bold text-gray-700">Jumlah:</span>
+              {/* Kuantitas yg masuk keranjang */}
+              <div className="flex items-center gap-4 my-4">
+                <span className="text-sm font-bold text-gray-700">Jumlah:</span>
               <div className="flex items-center gap-2">
                 <Button 
                   variant="secondary"
@@ -416,22 +343,16 @@ const [showWarning, setShowWarning] = useState(false);
                   {p.stock === 0 ? "Stok Habis" : "Beli Sekarang"}
                 </Button>
               </div>
-
             </div>
-
           </div>
-
         </div>
 
 
         {/* BAGIAN BAWAH: ULASAN & FORM TULIS ULASAN YANG LEBIH RAPI */}
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-          {/* KOLOM KIRI (Lebih luas): Daftar Ulasan */}
-
+          {/*Daftar Ulasan */}
           <div className="md:col-span-2 bg-white p-6 md:p-8 border border-gray-100 rounded-3xl shadow-sm space-y-6">
-
             <h2 className="text-2xl font-bold text-gray-800">
               Ulasan Pembeli ({reviews.length})
             </h2>
@@ -441,31 +362,23 @@ const [showWarning, setShowWarning] = useState(false);
               <p className="text-gray-500 italic">
                 Belum ada ulasan untuk produk ini.
               </p>
-
             ) : (
 
               <ul className="space-y-6">
-
                 {reviews.map((r) => (
-
                   <li 
                     key={r.id} 
                     className="border-b border-gray-100 pb-5 last:border-0"
                   >
-
                     <div className="flex items-center justify-between mb-1">
-
                       <div className="flex gap-1">
-
                         {[...Array(r.rating)].map((_, i) => (
-
                           <span 
                             key={i} 
                             className="text-yellow-400 text-base"
                           >
                             ★
                           </span>
-
                         ))}
 
                         {[...Array(5 - r.rating)].map((_, i) => (
@@ -506,38 +419,29 @@ const [showWarning, setShowWarning] = useState(false);
           </div>
 
 
-          {/* KOLOM KANAN: Kotak Aksi / Form Ulasan */}
-
+          {/* Form Ulasan */}
           <div className="bg-white p-6 md:p-8 border border-gray-100 rounded-3xl shadow-sm h-fit space-y-4">
-
             <h3 className="text-xl font-bold text-gray-800 border-b pb-3">
               Ulasan Anda
             </h3>
 
             {!hasPurchased ? (
 
-              /* Belum Pernah Beli */
+              //Belum Pernah Beli 
 
               <div className="text-center py-6 bg-gray-50 rounded-2xl border border-dashed border-gray-200 px-4">
-
                 <span className="text-4xl mb-2 block">
                   🔒
                 </span>
 
                 <p className="text-xs text-gray-600 font-medium">
-
                   Selesaikan pembelian produk ini terlebih dahulu untuk menulis ulasan.
-
                 </p>
-
               </div>
-
             ) : myReview && !isEditing ? (
 
-              /* Sudah Pernah Ulas & Tidak Sedang Diedit */
-
+              //Sudah Pernah Ulas & Tidak Sedang Diedit 
               <div className="space-y-4">
-
                 <div className="p-4 bg-green-50 rounded-2xl border border-green-100 text-center">
 
                   <p className="text-sm font-bold text-green-800 mb-1">
@@ -580,13 +484,11 @@ const [showWarning, setShowWarning] = useState(false);
 
             ) : (
 
-              /* Form Input (Muncul jika Belum Ulas ATAU Sedang Edit) */
-
+              //Form Input (Muncul jika Belum Ulas ATAU Sedang Edit)
               <form 
                 onSubmit={handleSubmit} 
                 className="space-y-4"
               >
-
                 <div>
 
                   <label className="block text-xs font-bold text-gray-700 mb-2">
@@ -607,24 +509,17 @@ const [showWarning, setShowWarning] = useState(false);
                             : "text-gray-200"
                         } hover:scale-125 transition-transform`}
                       >
-
                         ★
-
                       </button>
-
                     ))}
-
                   </div>
-
                 </div>
 
 
                 <div>
-
                   <label className="block text-xs font-bold text-gray-700 mb-2">
                     Tulis Komentar (Opsional)
                   </label>
-
                   <textarea
                     value={review} 
                     onChange={(e) => setReview(e.target.value)}
@@ -652,13 +547,8 @@ const [showWarning, setShowWarning] = useState(false);
             )}
 
           </div>
-
         </div>
-
       </div>
-
     </>
-
   );
-
 }

@@ -11,7 +11,7 @@ export default function Cart() {
   const totalPrice = cart.reduce((total, item) => total + item.price * item.qty, 0);
 
   return (
-    
+    // Halaman Keranjang Belanja  
     <div className="max-w-5xl mx-auto p-6">
     <BackButton to="/" />
 

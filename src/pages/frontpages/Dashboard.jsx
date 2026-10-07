@@ -17,10 +17,11 @@ export default function Dashboard() {
   const { data: produkServer, isLoading, isError } = useQuery({
     queryKey: ["dataSembako"],
     queryFn: fetchProductsAPI,
-    staleTime: 0, //Jangan simpan cache lama, selalu ambil data terbaru
-    refetchOnMount: true, // <--- Ambil ulang data setiap halaman dibuka
+    staleTime: 0, 
+    refetchOnMount: true, 
   });
 
+  
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -41,7 +42,7 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      {/* 1. BANNER PROMO (Sesuai dengan keinginanmu) */}
+      {/* Banner */}
       <div className="bg-gradient-to-r from-[#8B0000] to-red-800 text-white p-8 rounded-2xl mb-8 shadow-md flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
           <span className="bg-[#FFE600] text-[#8B0000] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">

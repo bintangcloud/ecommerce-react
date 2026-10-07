@@ -7,26 +7,11 @@ import Button from "../../components/Button";
 
 export default function Checkout() {
   const [isSuccess, setIsSuccess] = useState(false);
-
   const { cart, clearCart } = useCart();
   const location = useLocation();
   const navigate = useNavigate();
-
-  // ==========================================
-  // CEK SUMBER CHECKOUT
-  // ==========================================
-
-  // Produk yang dikirim dari tombol "Beli Sekarang"
   const directItem = location.state?.directBuyItem;
-
-  // Jika ada directItem → checkout produk tersebut saja
-  // Jika tidak → checkout semua isi keranjang
   const itemsToCheckout = directItem ? [directItem] : cart;
-
-  // ==========================================
-  // HITUNG TOTAL
-  // ==========================================
-
   const subtotal = itemsToCheckout.reduce(
     (total, item) =>
       total + item.price * (item.qty || item.quantity || 1),
@@ -34,14 +19,10 @@ export default function Checkout() {
   );
 
   const ongkir = 10000;
-
   const totalBayar =
     itemsToCheckout.length > 0 ? subtotal + ongkir : 0;
 
-  // ==========================================
-  // PROSES CHECKOUT
-  // ==========================================
-
+//checkout handler
   const handleCheckout = (e) => {
     e.preventDefault();
 
@@ -68,10 +49,7 @@ export default function Checkout() {
       JSON.stringify(riwayatTerjual)
     );
 
-    // ==========================================
-    // SIMPAN RIWAYAT BARANG YANG DIBELI
-    // ==========================================
-
+// Simpan riwayat belanja ke localStorage
     const riwayatLama =
       JSON.parse(
         localStorage.getItem("kopdes_riwayat_belanja")
@@ -93,15 +71,7 @@ export default function Checkout() {
       JSON.stringify(riwayatBaru)
     );
 
-    // ==========================================
-    // CLEAR CART
-    // ==========================================
-
-    // Kalau checkout biasa dari keranjang,
-    // kosongkan keranjang.
-    //
-    // Kalau Beli Sekarang, jangan kosongkan keranjang
-    // karena produk tersebut tidak berasal dari cart.
+    // Jika checkout dari halaman produk langsung, jangan hapus keranjang
     if (!directItem) {
       clearCart();
     }
@@ -109,10 +79,7 @@ export default function Checkout() {
     setIsSuccess(true);
   };
 
-  // ==========================================
-  // HALAMAN SUCCESS
-  // ==========================================
-
+  // Jika checkout berhasil, tampilkan pesan sukses
   if (isSuccess) {
     return (
       <div className="max-w-2xl mx-auto text-center bg-white p-10 rounded-lg shadow-md border mt-10">
@@ -136,10 +103,7 @@ export default function Checkout() {
     );
   }
 
-  // ==========================================
-  // HALAMAN CHECKOUT
-  // ==========================================
-
+  // Render halaman checkout
   return (
     <div className="max-w-5xl mx-auto p-6">
 
@@ -151,13 +115,8 @@ export default function Checkout() {
 
       <div className="flex flex-col md:flex-row gap-8">
 
-        {/* ======================================
-            BAGIAN KIRI
-            FORM PENGIRIMAN
-        ====================================== */}
-
+        {/* Form Pengiriman */}
         <div className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow border">
-
           <h2 className="font-bold text-xl mb-4 border-b pb-2">
             Informasi Pengiriman
           </h2>
@@ -209,9 +168,7 @@ export default function Checkout() {
               ></textarea>
             </div>
 
-            {/* ==================================
-                METODE PEMBAYARAN
-            ================================== */}
+            {/* Metode Pembayaran */}
 
             <h2 className="font-bold text-xl mt-6 mb-2 border-b pb-2">
               Metode Pembayaran
@@ -251,10 +208,7 @@ export default function Checkout() {
 
             </div>
 
-            {/* ==================================
-                TOMBOL CHECKOUT
-            ================================== */}
-
+            {/* Tombol Checkout */}
             <Button 
               type="submit" 
               disabled={itemsToCheckout.length === 0} 
@@ -266,13 +220,9 @@ export default function Checkout() {
           </form>
         </div>
 
-        {/* ======================================
-            BAGIAN KANAN
-            RINGKASAN PESANAN
-        ====================================== */}
+        {/* Ringkasan Pesanan*/}
 
         <div className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow border h-fit">
-
           <h2 className="font-bold text-xl border-b pb-3 mb-4">
             Ringkasan Pesanan
           </h2>

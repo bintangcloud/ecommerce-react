@@ -10,13 +10,12 @@ export default function ProductCard({ p }) {
   const [warningMsg, setWarningMsg] = useState("");
   const [showWarning, setShowWarning] = useState(false);
   const navigate = useNavigate();
-  // State untuk rating dan jumlah terjual
   const [avgRating, setAvgRating] = useState(0);
   const [totalReviews, setTotalReviews] = useState(0);
   const [totalSold, setTotalSold] = useState(0);
 
   useEffect(() => {
-    // 1. Ambil data ulasan untuk hitung rata-rata rating
+    // 1. Ambil data review dari localStorage
     const savedReviews = JSON.parse(localStorage.getItem(`kopdes_reviews_${p.id}`)) || [];
     if (savedReviews.length > 0) {
       const sum = savedReviews.reduce((acc, curr) => acc + curr.rating, 0);
@@ -30,7 +29,6 @@ export default function ProductCard({ p }) {
   }, [p.id]);
 
   const handleAddToCart = () => {
-    // Panggil addToCart dan tangkap statusnya
     const success = addToCart(p, 1);
     
     if (success) {
@@ -44,10 +42,10 @@ export default function ProductCard({ p }) {
   };
 
   return (
-    // Tambahkan 'relative overflow-hidden' agar notif blur terkurung pas di dalam kartu
+    // Kartu Produk dengan efek hover dan shadow
     <div className="relative overflow-hidden bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full group">
       
-      {/* 1. OVERLAY NOTIFIKASI BLUR DI DALAM KARTU */}
+      {/* Notifikasi Berhasil Tambah ke Keranjang */}
       {showNotif && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm transition-all duration-300">
           <div className="bg-[#424242]/95 text-white w-[85%] py-6 px-4 flex flex-col items-center justify-center gap-3 shadow-2xl rounded-2xl animate-fade-in-up">
@@ -71,7 +69,7 @@ export default function ProductCard({ p }) {
 
       <WarningAlert message={warningMsg} show={showWarning} />
 
-      {/* 2. KONTEN KARTU UTAMA */}
+      {/* Konten Kartu Produk */}
       <div>
         <div className="relative overflow-hidden rounded-xl mb-4 bg-gray-50 h-48">
           <img

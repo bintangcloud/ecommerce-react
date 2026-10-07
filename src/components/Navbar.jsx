@@ -12,11 +12,11 @@ export default function Navbar({
   const { totalQty } = useCart();
 
   return (
-    // STICKY TOP: Bikin Navbar selalu nempel di atas layar meskipun di scroll, dengan efek blur dan border
+    // Sticky Navbar dengan efek blur dan transparansi
     <nav className="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200 shadow-sm">
       <div className="max-w-6xl mx-auto px-4 py-3 flex flex-wrap md:flex-nowrap justify-between items-center gap-4">
         
-        {/* KIRI: Logo */}
+        {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group flex-shrink-0">
           <div className="bg-[#8B0000] text-white font-black text-xl w-10 h-10 flex items-center justify-center rounded-xl shadow-md group-hover:rotate-12 transition-transform">
             K
@@ -26,7 +26,7 @@ export default function Navbar({
           </span>
         </Link>
 
-        {/* TENGAH: Search & Filter (Hanya tampil di halaman Dashboard / Beranda) */}
+        {/* Search and Filter */}
         {isDashboard && (
           <div className="order-last md:order-none w-full md:w-auto flex-1 flex flex-col sm:flex-row items-center gap-2 max-w-2xl mx-auto">
             
@@ -59,7 +59,7 @@ export default function Navbar({
           </div>
         )}
 
-        {/* KANAN: Ikon Keranjang */}
+        {/* Keranjang */}
         <div className="flex items-center flex-shrink-0">
           <Link to="/cart" className="relative p-2 text-gray-700 hover:text-[#8B0000] transition hover:bg-red-50 rounded-full">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

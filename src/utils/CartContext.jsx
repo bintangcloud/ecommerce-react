@@ -3,11 +3,10 @@ import { createContext, useContext, useState, useEffect } from "react";
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  // Inisialisasi state dengan membaca Local Storage
-  const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem("kopdes_cart");
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+const [cart, setCart] = useState(() => {
+  const savedCart = localStorage.getItem("kopdes_cart");
+  return savedCart ? JSON.parse(savedCart) : [];
+});
 
   // Simpan otomatis ke Local Storage setiap kali cart berubah
   useEffect(() => {
@@ -22,13 +21,12 @@ const addToCart = (product, qtyToAdd = 1) => {
       const existing = prev.find((item) => item.id === product.id);
       
       if (existing) {
-        // Jika di keranjang sudah mencapai atau melebihi stok total
         if (existing.qty >= product.stock) {
           isSuccess = false;
           return prev;
         }
 
-        // Hitung sisa ruang yang tersedia untuk ditambah
+        // Hitung sisa ruang yang tersedia untuk produk ini
         const availableSpace = product.stock - existing.qty;
         
         // Jika jumlah yang mau ditambah lebih besar dari sisa ruang, tolak
@@ -79,12 +77,12 @@ const updateQty = (id, qty) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
-  // FUNGSI BARU: Mengosongkan keranjang setelah checkout sukses
+  // Fungsi untuk mengosongkan keranjang setelah checkout sukses
   const clearCart = () => {
     setCart([]);
   };
 
-  // Menghitung total barang untuk ditampilkan di Navbar
+  // Menghitung total barang untuk ditampilkan 
   const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
 
   return (

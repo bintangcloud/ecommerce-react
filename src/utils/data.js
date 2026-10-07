@@ -2,7 +2,6 @@ import berasImg from "../assets/beras.png";
 import minyakImg from "../assets/minyak.png";
 import gulaImg from "../assets/gula.png";
 
-// Ubah versi ini (misal: v2, v3, dst) jika nanti kamu mengubah data/gambar di initialProducts lagi
 const STORAGE_VERSION = "v2";
 const PRODUCT_KEY = `kopdes_products_${STORAGE_VERSION}`;
 const CATEGORY_KEY = `kopdes_categories_${STORAGE_VERSION}`;
@@ -49,11 +48,7 @@ export const initialProducts = [
   },
 ];
 
-
-// ==============================
-// GET PRODUCTS
-// ==============================
-
+//Ambil data produk dari Local Storage, jika tidak ada maka gunakan initialProducts
 export const getProducts = () => {
   const saved = localStorage.getItem(PRODUCT_KEY);
 
@@ -70,10 +65,7 @@ export const getProducts = () => {
 };
 
 
-// ==============================
-// CREATE PRODUCT
-// ==============================
-
+//Fungsi untuk menambahkan produk baru ke Local Storage
 export const addProduct = (newProduct) => {
   const current = getProducts();
 
@@ -109,10 +101,7 @@ export const addProduct = (newProduct) => {
 };
 
 
-// ==============================
-// UPDATE PRODUCT
-// ==============================
-
+//Fungsi untuk memperbarui data produk di Local Storage
 export const updateProduct = (id, updatedData) => {
   const current = getProducts();
 
@@ -138,10 +127,7 @@ export const updateProduct = (id, updatedData) => {
 };
 
 
-// ==============================
-// DELETE PRODUCT
-// ==============================
-
+//Fungsi untuk menghapus produk dari Local Storage
 export const deleteProduct = (id) => {
   const current = getProducts();
   const updated = current.filter((item) => item.id !== id);
@@ -152,16 +138,14 @@ export const deleteProduct = (id) => {
 };
 
 
-// ==============================
-// KATEGORI
-// ==============================
-
+//Kategori default
 const initialCategories = [
   "Sembako",
   "Bahan Dapur",
   "Kebutuhan Rumah",
 ];
 
+//Ambil data kategori dari Local Storage, jika tidak ada maka gunakan initialCategories
 export const getCategories = () => {
   const saved = localStorage.getItem(CATEGORY_KEY);
 
@@ -177,6 +161,7 @@ export const getCategories = () => {
   return initialCategories;
 };
 
+//Fungsi untuk menambahkan kategori baru ke Local Storage
 export const addCategory = (newCat) => {
   const current = getCategories();
 
@@ -190,10 +175,7 @@ export const addCategory = (newCat) => {
 };
 
 
-// ==============================
-// REDUCE STOCK AFTER CHECKOUT
-// ==============================
-
+//Fungsi untuk mengurangi stok produk setelah checkout
 export const reduceStockAfterCheckout = (cartItems) => {
   let products = getProducts();
 
