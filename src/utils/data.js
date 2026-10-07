@@ -1,6 +1,9 @@
 import berasImg from "../assets/beras.jpg";
 import minyakImg from "../assets/minyak.jpg";
 import gulaImg from "../assets/gula.jpg";
+import tehSariwangiImg from "../assets/teh.jpg";
+import pengepelImg from "../assets/pengepel.jpg";
+import telurImg from "../assets/telur.jpg";
 
 const STORAGE_VERSION = "v2";
 const PRODUCT_KEY = `kopdes_products_final_${STORAGE_VERSION}`;
@@ -39,13 +42,54 @@ export const initialProducts = [
     slug: "gula-pasir-lokal-1kg",
     price: 16500,
     stock: 150,
-    category: 2,
-    category_name: "Bahan Dapur",
+    category: 1,
+    category_name: "Sembako",
     rating: 4,
     description:
       "Gula pasir lokal berkualitas dengan rasa manis yang cocok untuk berbagai kebutuhan.",
     img: gulaImg,
   },
+  {
+  id: 4,
+  name: "Teh SariWangi",
+  slug: "teh-sariwangi",
+  price: 5000,
+  stock: 50,
+  category: 2,
+  category_name: "Bahan Dapur",
+  rating: 5,
+  description:
+    "Teh celup SariWangi dengan aroma dan rasa yang nikmat untuk menemani waktu santai.",
+  img: tehSariwangiImg,
+},
+
+{
+  id: 5,
+  name: "Pengepel Lantai",
+  slug: "pengepel-lantai",
+  price: 70000,
+  stock: 30,
+  category: 3,
+  category_name: "Kebutuhan Rumah",
+  rating: 4,
+  description:
+    "Pengepel lantai praktis untuk membantu membersihkan lantai rumah dengan mudah.",
+  img: pengepelImg,
+},
+
+{
+  id: 6,
+  name: "Telur Ayam",
+  slug: "telur-ayam",
+  price: 2000,
+  stock: 100,
+  category: 1,
+  category_name: "Sembako",
+  rating: 5,
+  description:
+    "Telur ayam segar yang cocok untuk berbagai kebutuhan memasak sehari-hari.",
+  img: telurImg,
+},
 ];
 
 //Ambil data produk dari Local Storage, jika tidak ada maka gunakan initialProducts
